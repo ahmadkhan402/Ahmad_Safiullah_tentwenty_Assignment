@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ImageBackground, StyleSheet, Dimensions } from 'react-native';
 import { colors } from '../../utils/constants';
-import { heightPixel } from '../../utils/helper';
+import { heightPixel, widthPixel } from '../../utils/helper';
 import CustomText from '../customText/CustomText';
 import { IMAGE_BASE_URL } from '../../config';
 
@@ -33,20 +33,19 @@ const GenreCard: React.FC<Props> = ({ genre, poster }) => {
 
 export default React.memo(GenreCard);
 
-const CARD_WIDTH = (width - 48) / 2;
 
 const styles = StyleSheet.create({
     card: {
-        width: CARD_WIDTH,
-        height: heightPixel(180),
-        borderRadius: 10,
+        flex: 1,
+        borderRadius: widthPixel(10),
         overflow: 'hidden',
-        backgroundColor: '#111',
+        backgroundColor: colors.black,
+        elevation: 3,
     },
     poster: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'flex-end',
+        aspectRatio: 5 / 3,
+
+        borderRadius: widthPixel(10),
     },
     imageRadius: {
         borderRadius: 10,

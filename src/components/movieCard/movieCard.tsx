@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     View,
-    ImageBackground,
+    Image,
     StyleSheet,
     Dimensions,
     TouchableOpacity,
@@ -10,7 +10,7 @@ import CustomText from '../customText/CustomText';
 import { Movie } from '../../types/types';
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors } from '../../utils/constants';
-import { heightPixel } from '../../utils/helper';
+import { widthPixel, heightPixel, getGenreNames } from '../../utils/helper';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const { width } = Dimensions.get('window');
@@ -20,51 +20,50 @@ interface Props {
     onPressMenu?: () => void;
 }
 
-const CARD_WIDTH = (width - 48) / 2;
+const CARD_HEIGHT = heightPixel(120);
+const POSTER_WIDTH = widthPixel(80);
 
 const MovieCard: React.FC<Props> = ({ movie, onPressMenu }) => {
+    console.log("movie", JSON.stringify(movie, null, 2));
+    const genreNames = movie.genre_ids ? getGenreNames(movie.genre_ids) : [];
     return (
         <View style={styles.card}>
-            <ImageBackground
+            {/* Poster */}
+            <Image
                 source={{ uri: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : '' }}
                 style={styles.poster}
-                imageStyle={styles.imageRadius}
+                resizeMode="cover"
             />
 
             <View style={styles.infoContainer}>
                 <CustomText
                     fontSize={16}
                     weight="semiBold"
-                    color={colors.white}
+                    color={colors.black}
                     numberOfLines={1}
                 >
-                    {movie.title ?? 'Untitled'}
+                    {movie?.title ?? movie.original_title}
                 </CustomText>
 
-                {movie.genre_names && movie.genre_names.length > 0 && (
-                    <View style={styles.genreContainer}>
-                        {movie.genre_names.map((genre: any, index: number) => (
-                            <CustomText
-                                key={index}
-                                fontSize={12}
-                                weight="regular"
-                                color="#aaa"
-                                style={{ marginBottom: 4 }}
-                            >
-                                {genre}
-                            </CustomText>
-                        ))}
-                    </View>
-                )}
 
-                <View style={styles.bottomRow}>
-                    <CustomText fontSize={12} weight="medium" color="#aaa">
-                        {movie.release_date ? movie.release_date.slice(0, 4) : 'N/A'}
-                    </CustomText>
-                    <TouchableOpacity activeOpacity={0.7} onPress={onPressMenu}>
-                        <MaterialIcons name="more-vert" size={22} color={colors.white} />
-                    </TouchableOpacity>
-                </View>
+                <CustomText
+                    fontSize={12}
+                    weight="regular"
+                    color="#DBDBDF"
+                    style={{ marginBottom: 2 }}
+                >
+                    {genreNames[0]}
+                </CustomText>
+                {/* <CustomText fontSize={12} weight="medium" color="#aaa">
+                    {movie.release_date ? movie.release_date.slice(0, 4) : 'N/A'}
+                </CustomText> */}
+            </View>
+
+            <View style={styles.bottomRow}>
+
+                <TouchableOpacity activeOpacity={0.7} onPress={onPressMenu}>
+                    <MaterialIcons name="more-horiz" size={24} color="#61C3F2" />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -74,23 +73,23 @@ export default React.memo(MovieCard);
 
 const styles = StyleSheet.create({
     card: {
-        width: CARD_WIDTH,
-        backgroundColor: '#111',
+        flexDirection: 'row',
+        // backgroundColor: '#111',
         borderRadius: 12,
         overflow: 'hidden',
-        marginBottom: 16,
+        marginBottom: 12,
+        height: CARD_HEIGHT,
     },
     poster: {
-        width: '100%',
-        height: heightPixel(180),
-        justifyContent: 'flex-end',
-    },
-    imageRadius: {
-        borderTopLeftRadius: 12,
-        borderTopRightRadius: 12,
+        width: widthPixel(130),
+        height: '100%',
+        borderRadius: 10
     },
     infoContainer: {
+        flex: 1,
         padding: 10,
+        gap: heightPixel(4)
+        // justifyContent: 'space-between',
     },
     genreContainer: {
         marginTop: 4,
@@ -99,6 +98,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 8,
     },
 });

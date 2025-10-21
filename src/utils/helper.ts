@@ -1,4 +1,5 @@
 import { Dimensions, PixelRatio } from "react-native";
+import { categoriesList } from "./data";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -23,3 +24,9 @@ export const widthPixel = (size: number): number => {
 export const font = (size: number): number => {
     return heightPixel(size);
 };
+
+export function getGenreNames(genreIds: number[]) {
+    return genreIds
+        .map(id => categoriesList.find(cat => cat.id === id)?.name)
+        .filter(Boolean);
+}

@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     listContainer: {
         paddingTop: heightPixel(20),
         paddingBottom: heightPixel(10),
-        paddingHorizontal: widthPixel(14),
+        paddingHorizontal: widthPixel(15),
         backgroundColor: colors.background,
         justifyContent: 'center',
         alignContent: 'center'
