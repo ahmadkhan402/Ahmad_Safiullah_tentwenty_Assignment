@@ -15,7 +15,6 @@ export default function Route() {
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name={ScreenNames.Tabs} component={BottomTabs} />
-                <Stack.Screen name={ScreenNames.Search} component={SearchScreen} />
                 <Stack.Screen name={ScreenNames.MovieDetails} component={MovieDetailsScreen} />
                 <Stack.Screen name={ScreenNames.MoviePlayer} component={MoviePlayerScreen} />
                 <Stack.Screen name={ScreenNames.TicketBooking} component={TicketBookingScreen} />

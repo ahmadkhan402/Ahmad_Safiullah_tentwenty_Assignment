@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { styles } from './styles';
+import CustomText from '../../components/customText/CustomText';
 
 const More = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>More Screen</Text>
+      <CustomText>Coming Soon</CustomText>
     </View>
   );
 };

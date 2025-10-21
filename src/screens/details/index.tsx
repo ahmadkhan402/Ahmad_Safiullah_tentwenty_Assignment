@@ -89,7 +89,7 @@ const MovieDetailsScreen: React.FC<Props> = ({ route }) => {
                                 { backgroundColor: genreColors[index % genreColors.length] },
                             ]}
                         >
-                            <CustomText fontSize={12} weight="medium" color={colors.white}>
+                            <CustomText fontSize={12} weight="medium" textAlignCenter color={colors.white}>
                                 {genre}
                             </CustomText>
                         </View>

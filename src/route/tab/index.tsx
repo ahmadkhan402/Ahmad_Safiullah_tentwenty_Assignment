@@ -5,14 +5,27 @@ import { Dashboard, Watch, MediaLibrary, More } from '../../screens';
 import { ScreenNames } from '../screenNames';
 import { colors, fontFamily } from '../../utils/constants';
 import { font, heightPixel } from '../../utils/helper';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SearchScreen from '../../screens/search';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+const SearchStack = () => (
+    <Stack.Navigator initialRouteName={ScreenNames.Watch} screenOptions={{ headerShown: false }}>
+        <Stack.Screen name={ScreenNames.Watch} component={Watch} />
+        <Stack.Screen name={ScreenNames.Search} component={SearchScreen} />
+    </Stack.Navigator>
+);
 
 export default function BottomTabs() {
+    const insets = useSafeAreaInsets();
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
-                tabBarIcon: ({ color, size, focused }) => {
+                tabBarIcon: ({ color, size }) => {
                     if (route.name === ScreenNames.TabDashboard) {
                         return <Ionicons name="grid" size={size} color={color} />;
                     } else if (route.name === ScreenNames.TabWatch) {
@@ -34,18 +47,18 @@ export default function BottomTabs() {
                 tabBarStyle: {
                     backgroundColor: '#262237',
                     borderTopWidth: 0,
-                    height: heightPixel(80),
+                    height: heightPixel(70) + insets.bottom,
                     borderTopLeftRadius: 27,
                     borderTopRightRadius: 27,
                     position: 'absolute',
                     overflow: 'hidden',
                     justifyContent: 'center',
+                    paddingBottom: insets.bottom,
                 },
-
                 tabBarLabelStyle: {
                     fontSize: font(11),
                     paddingBottom: 8,
-                    fontFamily: fontFamily.regular
+                    fontFamily: fontFamily.regular,
                 },
                 headerShown: false,
             })}
@@ -57,7 +70,7 @@ export default function BottomTabs() {
             />
             <Tab.Screen
                 name={ScreenNames.TabWatch}
-                component={Watch}
+                component={SearchStack}
                 options={{ title: 'Watch' }}
             />
             <Tab.Screen
