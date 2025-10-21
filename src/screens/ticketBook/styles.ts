@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
-        paddingHorizontal: widthPixel(16),
         paddingTop: heightPixel(40),
     },
     header: {
@@ -26,11 +25,10 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.skyBlue,
         borderRadius: 10,
         paddingVertical: heightPixel(14),
+        marginHorizontal: widthPixel(16),
+        marginBottom: heightPixel(5),
         alignItems: "center",
         justifyContent: "center",
-        // position: "absolute",
-        // bottom: heightPixel(20),
-        // left: widthPixel(16),
-        // right: widthPixel(16),
+
     },
 });

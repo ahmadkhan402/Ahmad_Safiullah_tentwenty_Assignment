@@ -24,8 +24,8 @@ interface Session {
 
 interface SessionSelectorProps {
     sessions: Session[];
-    selectedSession: number | string | null;
-    setSelectedSession: (id: number | string) => void;
+    selectedSession: any
+    setSelectedSession: (id: any) => void;
 }
 
 const SessionSelector: React.FC<SessionSelectorProps> = ({
@@ -36,7 +36,7 @@ const SessionSelector: React.FC<SessionSelectorProps> = ({
     const renderItem: ListRenderItem<Session> = useCallback(
         ({ item }) => (
             <TouchableOpacity
-                onPress={() => setSelectedSession(item.id)}
+                onPress={() => setSelectedSession(item)}
                 style={[
                     styles.sessionCard,
                     selectedSession === item.id && styles.activeSessionCard,
@@ -95,7 +95,7 @@ const SessionSelector: React.FC<SessionSelectorProps> = ({
             windowSize={5}
             removeClippedSubviews
             getItemLayout={(_, index) => ({
-                length: widthPixel(180), // approximate card width
+                length: widthPixel(180),
                 offset: widthPixel(180) * index,
                 index,
             })}

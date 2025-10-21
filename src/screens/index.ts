@@ -4,6 +4,7 @@ import MovieDetailsScreen from "./details";
 import MediaLibrary from "./MediaLibrary";
 import More from "./More";
 import MoviePlayerScreen from "./moviePlayer";
+import SeatSelectionScreen from "./seatSelection";
 import TicketBookingScreen from "./ticketBook";
 import Watch from "./Watch";
 
@@ -16,5 +17,6 @@ export {
     searchMovies,
     MovieDetailsScreen,
     MoviePlayerScreen,
-    TicketBookingScreen
+    TicketBookingScreen,
+    SeatSelectionScreen
 }

@@ -9,6 +9,8 @@ import SessionSelector from "../../components/sessionSelector/sessionSelector";
 import SafeAreaWrapper from "../../components/safeAreaWrapper/afeAreaWrapper";
 import { styles } from "./styles";
 import { dates, sessions } from "../../utils/data";
+import MovieHeader from "../../components/movieHeader/movieHeader";
+import { ScreenNames } from "../../route/screenNames";
 
 
 
@@ -19,26 +21,15 @@ const TicketBookingScreen = ({ navigation, route }: any) => {
 
     return (
         <SafeAreaWrapper style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="chevron-back-sharp" size={25} color="black" />
-                </TouchableOpacity>
-
-                <View style={{ alignItems: "center", flex: 1 }}>
-                    <CustomText fontSize={18} weight="semiBold" color={colors.black}>
-                        {movieTitle || "Undefined"}
-                    </CustomText>
-                    <CustomText fontSize={12} color={colors.skyBlue}>
-                        In Theaters {releaseDate || "December 22, 2021"}
-                    </CustomText>
-                </View>
-
-                <View style={{ width: 20 }} />
-            </View>
-
+            <MovieHeader
+                movieTitle={movieTitle}
+                releaseDate={releaseDate}
+                onBackPress={() => navigation.goBack()}
+            />
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: heightPixel(100) }}
+                style={{ flex: 1 }}
+                contentContainerStyle={{ paddingHorizontal: widthPixel(16), flexGrow: 1, backgroundColor: colors.background }}
             >
                 <View style={{ marginTop: heightPixel(20) }}>
                     <CustomText fontSize={16} weight="semiBold" color={colors.black}>
@@ -93,8 +84,10 @@ const TicketBookingScreen = ({ navigation, route }: any) => {
                 ]}
                 disabled={!selectedSession}
                 onPress={() => {
-                    navigation.navigate("SeatSelectionScreen", {
-                        sessionId: selectedSession,
+                    navigation.navigate(ScreenNames.SeatSelection, {
+                        movieTitle,
+                        releaseDate,
+                        session: selectedSession,
                         date: selectedDate,
                     });
                 }}

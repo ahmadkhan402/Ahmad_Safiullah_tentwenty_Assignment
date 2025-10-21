@@ -11,5 +11,6 @@ export const ScreenNames = {
     TabMore: 'TabMore',
     MovieDetails: "DetailsScreen",
     MoviePlayer: "MoviePlayer",
-    TicketBooking: "TicketBookingScreen"
+    TicketBooking: "TicketBooking",
+    SeatSelection: "SeatSelection"
 } 
