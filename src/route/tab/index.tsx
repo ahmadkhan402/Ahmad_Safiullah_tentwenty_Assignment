@@ -3,7 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { Dashboard, Watch, MediaLibrary, More } from '../../screens';
 import { ScreenNames } from '../screenNames';
-
+import { colors, fontFamily } from '../../utils/constants';
+import { font, heightPixel } from '../../utils/helper';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,34 +13,39 @@ export default function BottomTabs() {
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size, focused }) => {
-                    let iconName: any;
-
-                    if (route.name === 'Dashboard') {
-                        iconName = 'grid';
-                        return <Ionicons name={iconName} size={size} color={color} />;
-                    } else if (route.name === 'Watch') {
+                    if (route.name === ScreenNames.TabDashboard) {
+                        return <Ionicons name="grid" size={size} color={color} />;
+                    } else if (route.name === ScreenNames.TabWatch) {
                         return <Entypo name="controller-play" size={size + 2} color={color} />;
-                    } else if (route.name === 'Media Library') {
+                    } else if (route.name === ScreenNames.TabMediaLibrary) {
                         return <MaterialIcons name="video-library" size={size + 1} color={color} />;
-                    } else if (route.name === 'More') {
+                    } else if (route.name === ScreenNames.TabMore) {
                         return <Ionicons name="list" size={size + 1} color={color} />;
                     }
                 },
-                tabBarActiveTintColor: '#fff',
-                tabBarInactiveTintColor: '#8E8E93',
+                tabBarActiveTintColor: colors.background,
+                tabBarInactiveTintColor: colors.textSecondary,
+                tabBarLabelPosition: 'below-icon',
+                tabBarItemStyle: {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingVertical: heightPixel(10),
+                },
                 tabBarStyle: {
                     backgroundColor: '#262237',
                     borderTopWidth: 0,
-                    height: 75,
-                    borderTopLeftRadius: 30,
-                    borderTopRightRadius: 30,
+                    height: heightPixel(80),
+                    borderTopLeftRadius: 27,
+                    borderTopRightRadius: 27,
                     position: 'absolute',
                     overflow: 'hidden',
+                    justifyContent: 'center',
                 },
+
                 tabBarLabelStyle: {
-                    fontSize: 12,
+                    fontSize: font(11),
                     paddingBottom: 8,
-                    fontWeight: '600',
+                    fontFamily: fontFamily.regular
                 },
                 headerShown: false,
             })}
@@ -47,20 +53,23 @@ export default function BottomTabs() {
             <Tab.Screen
                 name={ScreenNames.TabDashboard}
                 component={Dashboard}
+                options={{ title: 'Dashboard' }}
             />
             <Tab.Screen
                 name={ScreenNames.TabWatch}
                 component={Watch}
+                options={{ title: 'Watch' }}
             />
             <Tab.Screen
                 name={ScreenNames.TabMediaLibrary}
                 component={MediaLibrary}
+                options={{ title: 'Library' }}
             />
             <Tab.Screen
                 name={ScreenNames.TabMore}
                 component={More}
+                options={{ title: 'More' }}
             />
-
         </Tab.Navigator>
     );
 }

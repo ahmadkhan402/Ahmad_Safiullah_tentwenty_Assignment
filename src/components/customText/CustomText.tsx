@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { StyleProp, Text, TextProps, TextStyle } from 'react-native';
-import { colors, fontFamily } from '../../constant/constants';
+import { colors, fontFamily } from '../../utils/constants';
 import { font, heightPixel } from '../../utils/helper';
 
 interface CustomTextProps extends TextProps {

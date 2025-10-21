@@ -4,7 +4,7 @@ export const ScreenNames = {
     Watch: 'Watch',
     MediaLibrary: 'MediaLibrary',
     More: 'More',
-
+    Search: 'Search',
     TabDashboard: 'TabDashboard',
     TabWatch: 'TabWatch',
     TabMediaLibrary: 'TabMediaLibrary',

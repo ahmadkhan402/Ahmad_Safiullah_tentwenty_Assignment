@@ -9,6 +9,7 @@ export const colors = {
     pink: '#E26CA5',
     purple: '#564CA3',
     gold: '#CD9D0F',
+    red: 'red',
     white: '#FFFFFF',
     black: '#000000',
     transparent: 'transparent',
