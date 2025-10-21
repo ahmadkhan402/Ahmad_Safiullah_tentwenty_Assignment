@@ -3,6 +3,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Movie } from '../../types/types';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../../config';
+import { categoriesList } from '../../utils/data';
 
 
 interface MoviesState {
@@ -41,13 +42,8 @@ export const fetchUpcomingMovies = createAsyncThunk<Movie[], void, { rejectValue
     }
 );
 
-const categoriesList = [
-    { id: 28, name: 'Action' },
-    { id: 35, name: 'Comedy' },
-    { id: 18, name: 'Drama' },
-    { id: 27, name: 'Horror' },
-    { id: 10749, name: 'Romance' },
-];
+
+
 
 export const fetchCategoryMovies = createAsyncThunk<
     Record<string, Movie[]>,

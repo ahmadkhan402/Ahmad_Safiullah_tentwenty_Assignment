@@ -1,22 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-    View,
-    TextInput,
-    StyleSheet,
-    FlatList,
-    ScrollView,
-    ActivityIndicator,
-    Dimensions,
-} from 'react-native';
+import { View, TextInput, StyleSheet, FlatList, ActivityIndicator, Dimensions } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks';
-import {
-    fetchCategoryMovies,
-    searchMovies,
-    clearSearchResults,
-} from '../../redux/slices/moviesSlice';
+import { fetchCategoryMovies, searchMovies, clearSearchResults } from '../../redux/slices/moviesSlice';
 import { debounce } from 'lodash';
-import CustomText from '../../components/customText/CustomText';
 import MovieCard from '../../components/movieCard/movieCard';
+import GenreCard from '../../components/GenreCard/GenreCard';
+import { styles } from './styles';
+import SafeAreaWrapper from '../../components/safeAreaWrapper/afeAreaWrapper';
+
 
 const { width } = Dimensions.get('window');
 
@@ -42,9 +33,13 @@ const SearchScreen: React.FC = () => {
         handleSearch(text);
     };
 
+    const genreList = Object.entries(categories).map(([genre, movies]) => ({
+        genre,
+        thumbnail: movies[0]?.poster_path || '',
+    }));
+
     return (
-        <View style={styles.container}>
-            {/* Search Bar */}
+        <SafeAreaWrapper style={styles.container}>
             <TextInput
                 placeholder="Search movies..."
                 placeholderTextColor="#999"
@@ -53,60 +48,36 @@ const SearchScreen: React.FC = () => {
                 style={styles.search}
             />
 
-            {loading && (
-                <ActivityIndicator size="large" color="#fff" style={{ marginVertical: 10 }} />
-            )}
+            {loading && <ActivityIndicator size="large" color="#fff" style={{ marginVertical: 10 }} />}
 
             {query.trim().length > 0 ? (
                 <FlatList
-                    horizontal
+                    key="searchResults"
                     data={searchResults}
                     renderItem={({ item }) => <MovieCard movie={item} />}
                     keyExtractor={item => item.id.toString()}
                     showsHorizontalScrollIndicator={false}
                 />
             ) : (
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    {Object.entries(categories).map(([genre, movies]) => (
-                        <View key={genre} style={styles.categoryBlock}>
-                            <CustomText fontSize={18} weight="semiBold" color="#fff">
-                                {genre}
-                            </CustomText>
-                            <FlatList
-                                horizontal
-                                data={movies}
-                                renderItem={({ item }) => <MovieCard movie={item} />}
-                                keyExtractor={item => item.id.toString()}
-                                showsHorizontalScrollIndicator={false}
-                                initialNumToRender={5}
-                                maxToRenderPerBatch={10}
-                                windowSize={5}
-                            />
-                        </View>
-                    ))}
-                </ScrollView>
+                <FlatList
+                    data={genreList}
+                    numColumns={2}
+                    keyExtractor={item => item.genre}
+                    renderItem={({ item }) => <GenreCard genre={item.genre} poster={item.thumbnail} />}
+                    columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 16 }}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.listContainer}
+                    initialNumToRender={10}
+                    maxToRenderPerBatch={10}
+                    windowSize={5}
+                    removeClippedSubviews
+                    updateCellsBatchingPeriod={100}
+                />
             )}
-        </View>
+        </SafeAreaWrapper>
     );
 };
 
 export default SearchScreen;
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#000',
-        paddingTop: 40,
-        paddingHorizontal: 16,
-    },
-    search: {
-        backgroundColor: '#111',
-        borderRadius: 10,
-        padding: 12,
-        color: '#fff',
-        marginBottom: 16,
-    },
-    categoryBlock: {
-        marginBottom: 20,
-    },
-});
+

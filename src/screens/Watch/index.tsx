@@ -12,6 +12,7 @@ import { ScreenNames } from '../../route/screenNames';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
+import SafeAreaWrapper from '../../components/safeAreaWrapper/afeAreaWrapper';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -91,7 +92,7 @@ const Watch: React.FC = () => {
   const renderItem = ({ item }: { item: Movie }) => <MovieCard item={item} />;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+    <SafeAreaWrapper style={styles.container}>
       <Header navigation={navigation} />
       <FlatList
         data={movies}
@@ -105,7 +106,7 @@ const Watch: React.FC = () => {
         removeClippedSubviews
         updateCellsBatchingPeriod={100}
       />
-    </View>
+    </SafeAreaWrapper>
   );
 };
 
