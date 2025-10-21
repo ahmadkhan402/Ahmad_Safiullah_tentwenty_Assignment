@@ -1,3 +1,4 @@
+import { searchMovies } from "../redux/slices/moviesSlice";
 import Dashboard from "./dashboard";
 import MediaLibrary from "./MediaLibrary";
 import More from "./More";
@@ -8,4 +9,5 @@ export {
     Dashboard,
     MediaLibrary,
     Watch,
+    searchMovies
 }
