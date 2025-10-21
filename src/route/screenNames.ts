@@ -9,5 +9,6 @@ export const ScreenNames = {
     TabWatch: 'TabWatch',
     TabMediaLibrary: 'TabMediaLibrary',
     TabMore: 'TabMore',
-    MovieDetails: "DetailsScreen"
+    MovieDetails: "DetailsScreen",
+    MoviePlayer: "MoviePlayer"
 } 

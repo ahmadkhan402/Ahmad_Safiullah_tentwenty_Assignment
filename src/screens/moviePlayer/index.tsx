@@ -1,23 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Video, ResizeMode } from 'expo-av';
+import React, { useEffect, useState } from 'react';
+import { View, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { TMDB_API_KEY } from '../../config';
+import YoutubePlayer, { PLAYER_STATES } from 'react-native-youtube-iframe';
 import CustomText from '../../components/customText/CustomText';
 import { colors } from '../../utils/constants';
-
+import { TMDB_API_KEY } from '../../config';
+import { styles } from './styles';
 
 interface Props {
     route: any;
     navigation: any;
 }
 
-
-
-const TrailerPlayerScreen: React.FC<Props> = ({ route, navigation }) => {
+const MoviePlayerScreen: React.FC<Props> = ({ route, navigation }) => {
     const { movieId } = route.params;
-    const videoRef = useRef<Video>(null);
-    const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const [videoKey, setVideoKey] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,27 +27,23 @@ const TrailerPlayerScreen: React.FC<Props> = ({ route, navigation }) => {
                 `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`
             );
             const data = await response.json();
-            const trailer = data.results?.find(
-                (vid: any) => vid.type === 'Trailer' && vid.site === 'YouTube'
-            );
+            const trailer =
+                data.results?.find(
+                    (vid: any) =>
+                        (vid.type === 'Trailer' || vid.type === 'Teaser') && vid.site === 'YouTube'
+                ) || data.results?.[0];
 
             if (trailer) {
-                setVideoUrl(`https://www.youtube.com/watch?v=${trailer.key}`);
+                setVideoKey(trailer.key);
             } else {
-                alert('Trailer not available');
+                alert('No trailer available');
                 navigation.goBack();
             }
-        } catch (err) {
-            console.error(err);
+        } catch (error) {
+            console.error('Error fetching trailer:', error);
             navigation.goBack();
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handlePlaybackStatusUpdate = (status: any) => {
-        if (status.didJustFinish) {
-            navigation.goBack();
         }
     };
 
@@ -64,58 +57,30 @@ const TrailerPlayerScreen: React.FC<Props> = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={styles.doneButton}
-                onPress={() => navigation.goBack()}
-            >
+            <TouchableOpacity style={styles.doneButton} onPress={() => navigation.goBack()}>
                 <Ionicons name="close" size={28} color={colors.white} />
-                <CustomText fontSize={16} weight="medium" color={colors.white}>
-                    Done
-                </CustomText>
             </TouchableOpacity>
 
-            {/* Video Player */}
-            {videoUrl && (
-                <Video
-                    ref={videoRef}
-                    style={styles.video}
-                    source={{
-                        uri: `https://drive.google.com/uc?export=download&id=${videoUrl}`,
+            {videoKey ? (
+                <YoutubePlayer
+                    height={250}
+                    play={true}
+                    videoId={videoKey}
+                    onChangeState={(event: PLAYER_STATES) => {
+                        console.log("eve,", event);
+
+                        if (event === 'ended') {
+                            navigation.goBack();
+                        }
                     }}
-                    shouldPlay
-                    resizeMode={ResizeMode.CONTAIN}
-                    useNativeControls
-                    onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
                 />
+            ) : (
+                <CustomText fontSize={16} color={colors.white}>
+                    No Trailer Available
+                </CustomText>
             )}
         </View>
     );
 };
 
-export default TrailerPlayerScreen;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'black',
-        justifyContent: 'center',
-    },
-    video: {
-        flex: 1,
-    },
-    doneButton: {
-        position: 'absolute',
-        top: 50,
-        left: 20,
-        zIndex: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-    },
-    loaderContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'black',
-    },
-});
+export default MoviePlayerScreen;

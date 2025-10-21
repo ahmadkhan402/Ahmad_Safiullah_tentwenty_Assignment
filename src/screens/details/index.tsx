@@ -12,6 +12,8 @@ import CustomText from '../../components/customText/CustomText';
 import { colors } from '../../utils/constants';
 import { heightPixel } from '../../utils/helper';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { ScreenNames } from '../../route/screenNames';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -20,7 +22,8 @@ interface Props {
     navigation: any;
 }
 
-const MovieDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
+const MovieDetailsScreen: React.FC<Props> = ({ route }) => {
+    const navigation = useNavigation<any>()
     const { movie } = route.params;
     const genreNames = movie?.genre_ids || [];
 
@@ -62,7 +65,7 @@ const MovieDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
                         </CustomText>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.trailerButton}>
+                    <TouchableOpacity style={styles.trailerButton} onPress={() => navigation.navigate(ScreenNames.MoviePlayer, { movieId: movie.id })}>
                         <CustomText fontSize={14} weight="medium" color={colors.white}>
                             ▶ Watch Trailer
                         </CustomText>
