@@ -14,8 +14,8 @@ import { heightPixel } from '../../utils/helper';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { ScreenNames } from '../../route/screenNames';
+import { IMAGE_BASE_URL } from '../../config';
 
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 interface Props {
     route: any;
@@ -26,12 +26,15 @@ const MovieDetailsScreen: React.FC<Props> = ({ route }) => {
     const navigation = useNavigation<any>()
     const { movie } = route.params;
     const genreNames = movie?.genre_ids || [];
+    const imgUrl = movie?.backdrop_path ? `${IMAGE_BASE_URL}${movie.backdrop_path}` : null;
+
+    console.log("imada", !!movie?.backdrop_pathUrl);
+
 
     return (
         <View style={styles.container}>
-            {/* Header Image */}
             <ImageBackground
-                source={{ uri: `${IMAGE_BASE_URL}${movie?.backdrop_path}` }}
+                source={imgUrl ? { uri: imgUrl } : undefined}
                 style={styles.posterBackground}
                 resizeMode="cover"
             >
@@ -39,9 +42,9 @@ const MovieDetailsScreen: React.FC<Props> = ({ route }) => {
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
                 >
-                    <Ionicons name="chevron-back-sharp" size={25} color="#fff" />
+                    <Ionicons name="chevron-back-sharp" size={25} color={movie?.backdrop_path ? "#fff" : "#000"} />
 
-                    <CustomText fontSize={16} weight="medium" color={colors.white}>
+                    <CustomText fontSize={16} weight="medium" color={movie?.backdrop_path ? "#fff" : "#000"}>
                         Watch
                     </CustomText>
                 </TouchableOpacity>

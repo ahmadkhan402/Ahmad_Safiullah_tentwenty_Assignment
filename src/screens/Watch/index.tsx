@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from 'react';
-import { View, FlatList, ImageBackground, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, FlatList, ImageBackground, ActivityIndicator, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks';
-import { fetchUpcomingMovies } from '../../redux/slices/moviesSlice';
+import { fetchCategoryMovies, fetchUpcomingMovies, loadCachedMovies } from '../../redux/slices/moviesSlice';
 import { Movie } from '../../types/types';
 import { heightPixel, widthPixel } from '../../utils/helper';
 import { colors } from '../../utils/constants';
@@ -38,8 +38,11 @@ const Header = ({ navigation }: any) => (
   </View>
 );
 const MovieCard = memo(({ item }: { item: Movie }) => {
+  const navigation = useNavigation<any>()
   return (
-    <View style={styles.card}>
+    <Pressable style={styles.card} onPress={() => {
+      navigation.navigate(ScreenNames.MovieDetails, { movie: item });
+    }}>
       <Image
         source={{ uri: `${IMAGE_BASE_URL}${item.poster_path}` }}
         style={styles.poster}
@@ -58,7 +61,7 @@ const MovieCard = memo(({ item }: { item: Movie }) => {
           {item.title}
         </CustomText>
       </View>
-    </View>
+    </Pressable>
   );
 });
 const Watch: React.FC = () => {
@@ -69,6 +72,8 @@ const Watch: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchUpcomingMovies());
+    dispatch(loadCachedMovies());
+    dispatch(fetchCategoryMovies());
   }, [dispatch]);
 
   if (loading) {

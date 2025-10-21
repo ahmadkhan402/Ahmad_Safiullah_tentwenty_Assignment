@@ -5,7 +5,6 @@ import { Movie } from '../../types/types';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../../config';
 import { categoriesList } from '../../utils/data';
 
-
 interface MoviesState {
     movies: Movie[];
     categories: Record<string, Movie[]>;
@@ -21,6 +20,24 @@ const initialState: MoviesState = {
     loading: false,
     error: null,
 };
+
+export const loadCachedMovies = createAsyncThunk<
+    { movies: Movie[]; categories: Record<string, Movie[]> },
+    void,
+    { rejectValue: string }
+>('movies/loadCached', async (_, { rejectWithValue }) => {
+    try {
+        const cachedMovies = await AsyncStorage.getItem('upcomingMovies');
+        const cachedCategories = await AsyncStorage.getItem('categoryMovies');
+
+        return {
+            movies: cachedMovies ? JSON.parse(cachedMovies) : [],
+            categories: cachedCategories ? JSON.parse(cachedCategories) : {},
+        };
+    } catch (error: any) {
+        return rejectWithValue(error.message || 'Failed to load cached movies');
+    }
+});
 
 export const fetchUpcomingMovies = createAsyncThunk<Movie[], void, { rejectValue: string }>(
     'movies/fetchUpcoming',
@@ -41,9 +58,6 @@ export const fetchUpcomingMovies = createAsyncThunk<Movie[], void, { rejectValue
         }
     }
 );
-
-
-
 
 export const fetchCategoryMovies = createAsyncThunk<
     Record<string, Movie[]>,
@@ -100,6 +114,23 @@ const moviesSlice = createSlice({
     },
     extraReducers: builder => {
         builder
+            .addCase(loadCachedMovies.pending, state => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(
+                loadCachedMovies.fulfilled,
+                (state, action: PayloadAction<{ movies: Movie[]; categories: Record<string, Movie[]> }>) => {
+                    state.loading = false;
+                    state.movies = action.payload.movies;
+                    state.categories = action.payload.categories;
+                }
+            )
+            .addCase(loadCachedMovies.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ?? 'Failed to load cached movies';
+            })
+
             .addCase(fetchUpcomingMovies.pending, state => {
                 state.loading = true;
                 state.error = null;
@@ -116,6 +147,7 @@ const moviesSlice = createSlice({
             // Categories
             .addCase(fetchCategoryMovies.pending, state => {
                 state.loading = true;
+                state.error = null;
             })
             .addCase(fetchCategoryMovies.fulfilled, (state, action: PayloadAction<Record<string, Movie[]>>) => {
                 state.loading = false;
@@ -129,6 +161,7 @@ const moviesSlice = createSlice({
             // Search
             .addCase(searchMovies.pending, state => {
                 state.loading = true;
+                state.error = null;
             })
             .addCase(searchMovies.fulfilled, (state, action: PayloadAction<Movie[]>) => {
                 state.loading = false;
