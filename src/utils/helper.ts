@@ -30,3 +30,4 @@ export function getGenreNames(genreIds: number[]) {
         .map(id => categoriesList.find(cat => cat.id === id)?.name)
         .filter(Boolean);
 }
+

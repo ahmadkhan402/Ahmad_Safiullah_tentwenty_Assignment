@@ -17,7 +17,26 @@ export const styles = StyleSheet.create({
         marginHorizontal: 16,
         marginBottom: 16,
     },
-
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 40,
+        flexGrow: 1
+    },
+    txt: {
+        paddingBottom: 4
+    },
+    searchResultHeader: {
+        gap: widthPixel(5),
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        marginBottom: 16,
+    },
     listContainer: {
         paddingTop: heightPixel(20),
         paddingBottom: heightPixel(10),

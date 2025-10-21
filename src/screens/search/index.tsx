@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, TextInput, StyleSheet, FlatList, ActivityIndicator, Dimensions } from 'react-native';
+import { View, TextInput, StyleSheet, FlatList, ActivityIndicator, Dimensions, TouchableOpacity } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks';
 import { fetchCategoryMovies, searchMovies, clearSearchResults } from '../../redux/slices/moviesSlice';
 import { debounce } from 'lodash';
@@ -11,6 +11,7 @@ import GenresCard from '../../components/genreCard/genresCard';
 import { heightPixel, widthPixel } from '../../utils/helper';
 import CustomText from '../../components/customText/CustomText';
 import { colors } from '../../utils/constants';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 
 const { width } = Dimensions.get('window');
@@ -20,6 +21,7 @@ const SearchScreen: React.FC = () => {
     const { categories, searchResults, loading } = useAppSelector(state => state.movies);
     const [query, setQuery] = useState('');
     const [searchActive, setSearchActive] = useState(false);
+    const [onSearchPress, setOnSearchPress] = useState(false);
     useEffect(() => {
         dispatch(fetchCategoryMovies());
     }, [dispatch]);
@@ -32,11 +34,24 @@ const SearchScreen: React.FC = () => {
 
     return (
         <SafeAreaWrapper style={styles.container}>
-            <SearchInput
-                query={query}
-                setQuery={setQuery}
-                onSearchActive={setSearchActive}
-            />
+            {onSearchPress ? (
+                <View style={styles.searchResultHeader}>
+                    <TouchableOpacity onPress={() => setOnSearchPress(false)} >
+                        <Ionicons name="chevron-back-sharp" size={25} color="black" />
+                    </TouchableOpacity>
+
+                    <CustomText fontSize={16} weight="semiBold" color={colors.black} style={styles.txt} textAlignCenter>
+                        {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
+                    </CustomText>
+                </View>
+            ) : (
+                <SearchInput
+                    query={query}
+                    setQuery={setQuery}
+                    onSearchActive={setSearchActive}
+                    onSearchPress={setOnSearchPress}
+                />
+            )}
 
             {loading && <ActivityIndicator size="large" color="#fff" style={{ marginVertical: 10 }} />}
 
@@ -47,7 +62,16 @@ const SearchScreen: React.FC = () => {
                     renderItem={({ item }) => <MovieCard movie={item} />}
                     keyExtractor={item => item.id.toString()}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.listContainer}
+                    contentContainerStyle={[styles.listContainer, { flexGrow: 1 }]}
+                    ListEmptyComponent={() => (
+                        <View
+                            style={styles.emptyContainer}
+                        >
+                            <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
+                                No search results available
+                            </CustomText>
+                        </View>
+                    )}
                     ListHeaderComponent={() => (
                         <View style={{ borderBottomWidth: 0.2, borderColor: "#0000001", marginBottom: heightPixel(20) }}>
                             <CustomText

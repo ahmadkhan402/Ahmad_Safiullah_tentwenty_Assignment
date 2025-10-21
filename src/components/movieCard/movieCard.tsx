@@ -5,12 +5,15 @@ import {
     StyleSheet,
     Dimensions,
     TouchableOpacity,
+    Pressable,
 } from 'react-native';
 import CustomText from '../customText/CustomText';
 import { Movie } from '../../types/types';
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors } from '../../utils/constants';
 import { widthPixel, heightPixel, getGenreNames } from '../../utils/helper';
+import { useNavigation } from '@react-navigation/native';
+import { ScreenNames } from '../../route/screenNames';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const { width } = Dimensions.get('window');
@@ -26,8 +29,11 @@ const POSTER_WIDTH = widthPixel(80);
 const MovieCard: React.FC<Props> = ({ movie, onPressMenu }) => {
     console.log("movie", JSON.stringify(movie, null, 2));
     const genreNames = movie.genre_ids ? getGenreNames(movie.genre_ids) : [];
+    const navigation = useNavigation<any>()
     return (
-        <View style={styles.card}>
+        <Pressable style={styles.card} hitSlop={15} onPress={() => {
+            navigation.navigate(ScreenNames.MovieDetails, { movie });
+        }}>
             {/* Poster */}
             <Image
                 source={{ uri: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : '' }}
@@ -65,7 +71,7 @@ const MovieCard: React.FC<Props> = ({ movie, onPressMenu }) => {
                     <MaterialIcons name="more-horiz" size={24} color="#61C3F2" />
                 </TouchableOpacity>
             </View>
-        </View>
+        </Pressable>
     );
 };
 

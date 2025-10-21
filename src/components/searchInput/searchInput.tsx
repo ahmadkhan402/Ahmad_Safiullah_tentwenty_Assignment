@@ -17,9 +17,10 @@ interface Props {
     query: string;
     setQuery: (value: string) => void;
     onSearchActive: (active: boolean) => void;
+    onSearchPress: (active: boolean) => void;
 }
 
-const SearchInput: React.FC<Props> = ({ query, setQuery, onSearchActive }) => {
+const SearchInput: React.FC<Props> = ({ query, onSearchPress, setQuery, onSearchActive }) => {
     const dispatch = useAppDispatch();
     const { searchResults } = useAppSelector(state => state.movies);
 
@@ -50,7 +51,9 @@ const SearchInput: React.FC<Props> = ({ query, setQuery, onSearchActive }) => {
 
     return (
         <View style={styles.container}>
-            <MaterialIcons name="search" size={30} color="#999" style={{ marginRight: 8 }} />
+            <TouchableOpacity onPress={() => onSearchPress?.(true)}>
+                <MaterialIcons name="search" size={30} color="#999" style={{ marginRight: 8 }} />
+            </TouchableOpacity>
             <TextInput
                 placeholder="TV shows, movies and more"
                 placeholderTextColor="#999"
