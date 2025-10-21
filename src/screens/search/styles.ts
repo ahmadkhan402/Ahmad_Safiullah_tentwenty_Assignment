@@ -43,7 +43,8 @@ export const styles = StyleSheet.create({
         paddingHorizontal: widthPixel(15),
         backgroundColor: colors.background,
         justifyContent: 'center',
-        alignContent: 'center'
+        alignContent: 'center',
+        flexGrow: 1
 
     },
 });

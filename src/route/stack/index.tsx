@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabs from '../tab';
 import SearchScreen from '../../screens/search';
-import { MovieDetailsScreen, MoviePlayerScreen, searchMovies } from '../../screens';
+import { MovieDetailsScreen, MoviePlayerScreen, searchMovies, TicketBookingScreen } from '../../screens';
 import { ScreenNames } from '../screenNames';
 
 
@@ -18,7 +18,7 @@ export default function Route() {
                 <Stack.Screen name={ScreenNames.Search} component={SearchScreen} />
                 <Stack.Screen name={ScreenNames.MovieDetails} component={MovieDetailsScreen} />
                 <Stack.Screen name={ScreenNames.MoviePlayer} component={MoviePlayerScreen} />
-                {/* // <Stack.Screen name="More" component={More} /> */}
+                <Stack.Screen name={ScreenNames.TicketBooking} component={TicketBookingScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

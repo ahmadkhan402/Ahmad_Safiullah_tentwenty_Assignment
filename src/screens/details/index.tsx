@@ -59,7 +59,10 @@ const MovieDetailsScreen: React.FC<Props> = ({ route }) => {
                         In Theaters {movie?.release_date}
                     </CustomText>
 
-                    <TouchableOpacity style={styles.ticketButton}>
+                    <TouchableOpacity style={styles.ticketButton} onPress={() => navigation.navigate(ScreenNames.TicketBooking, {
+                        movieTitle: movie.title,
+                        releaseDate: movie.release_date,
+                    })}>
                         <CustomText fontSize={14} weight="semiBold" color={colors.white}>
                             Get Tickets
                         </CustomText>

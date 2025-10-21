@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, TextInput, StyleSheet, FlatList, ActivityIndicator, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, ActivityIndicator, Dimensions, TouchableOpacity } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks';
-import { fetchCategoryMovies, searchMovies, clearSearchResults } from '../../redux/slices/moviesSlice';
-import { debounce } from 'lodash';
+import { fetchCategoryMovies } from '../../redux/slices/moviesSlice';
 import MovieCard from '../../components/movieCard/movieCard';
 import { styles } from './styles';
 import SafeAreaWrapper from '../../components/safeAreaWrapper/afeAreaWrapper';
@@ -11,8 +10,7 @@ import GenresCard from '../../components/genreCard/genresCard';
 import { heightPixel, widthPixel } from '../../utils/helper';
 import CustomText from '../../components/customText/CustomText';
 import { colors } from '../../utils/constants';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
@@ -22,25 +20,54 @@ const SearchScreen: React.FC = () => {
     const [query, setQuery] = useState('');
     const [searchActive, setSearchActive] = useState(false);
     const [onSearchPress, setOnSearchPress] = useState(false);
-    useEffect(() => {
-        dispatch(fetchCategoryMovies());
-    }, [dispatch]);
+    const [isGenreListReady, setIsGenreListReady] = useState(false);
 
+    useEffect(() => {
+        const loadCategories = async () => {
+            await dispatch(fetchCategoryMovies());
+            setIsGenreListReady(true);
+        };
+        loadCategories();
+    }, [dispatch]);
 
     const genreList = Object.entries(categories).map(([genre, movies]) => ({
         genre,
-        thumbnail: movies[0]?.poster_path || '',
+        thumbnail: movies?.[0]?.poster_path || '',
     }));
+
+    const loadingFuntion = () => {
+
+        if (loading || !isGenreListReady) {
+            return (
+                <SafeAreaWrapper style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                    <ActivityIndicator size="large" color={colors.darkBackground} />
+                    <CustomText
+                        fontSize={14}
+                        color={colors.darkBackground}
+                        style={{ marginTop: heightPixel(10) }}
+                    >
+                        Loading movies...
+                    </CustomText>
+                </SafeAreaWrapper>
+            );
+        }
+    }
 
     return (
         <SafeAreaWrapper style={styles.container}>
             {onSearchPress ? (
                 <View style={styles.searchResultHeader}>
-                    <TouchableOpacity onPress={() => setOnSearchPress(false)} >
+                    <TouchableOpacity onPress={() => setOnSearchPress(false)}>
                         <Ionicons name="chevron-back-sharp" size={25} color="black" />
                     </TouchableOpacity>
 
-                    <CustomText fontSize={16} weight="semiBold" color={colors.black} style={styles.txt} textAlignCenter>
+                    <CustomText
+                        fontSize={16}
+                        weight="semiBold"
+                        color={colors.black}
+                        style={styles.txt}
+                        textAlignCenter
+                    >
                         {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
                     </CustomText>
                 </View>
@@ -52,9 +79,7 @@ const SearchScreen: React.FC = () => {
                     onSearchPress={setOnSearchPress}
                 />
             )}
-
-            {loading && <ActivityIndicator size="large" color="#fff" style={{ marginVertical: 10 }} />}
-
+            {loadingFuntion()}
             {searchActive ? (
                 <FlatList
                     key="searchResults"
@@ -62,11 +87,9 @@ const SearchScreen: React.FC = () => {
                     renderItem={({ item }) => <MovieCard movie={item} />}
                     keyExtractor={item => item.id.toString()}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={[styles.listContainer, { flexGrow: 1 }]}
+                    contentContainerStyle={styles.listContainer}
                     ListEmptyComponent={() => (
-                        <View
-                            style={styles.emptyContainer}
-                        >
+                        <View style={styles.emptyContainer}>
                             <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
                                 No search results available
                             </CustomText>
@@ -99,6 +122,13 @@ const SearchScreen: React.FC = () => {
                     windowSize={5}
                     removeClippedSubviews
                     updateCellsBatchingPeriod={100}
+                    ListEmptyComponent={() => (
+                        !loading && isGenreListReady && <View style={styles.emptyContainer}>
+                            <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
+                                No genreList available
+                            </CustomText>
+                        </View>
+                    )}
                 />
             )}
         </SafeAreaWrapper>
@@ -106,5 +136,3 @@ const SearchScreen: React.FC = () => {
 };
 
 export default SearchScreen;
-
-
