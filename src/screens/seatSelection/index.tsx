@@ -6,13 +6,12 @@ import SafeAreaWrapper from "../../components/safeAreaWrapper/afeAreaWrapper";
 import MovieHeader from "../../components/movieHeader/movieHeader";
 import { colors } from "../../utils/constants";
 import { heightPixel, widthPixel } from "../../utils/helper";
-import { images } from "../../assets/images";
+import { images } from "../../assets";
 
 const SeatSelectionScreen = ({ navigation, route }: any) => {
     const { movieTitle, releaseDate, session } = route.params;
 
     const [selectedSeats, setSelectedSeats] = useState([" 4 / 3", " 1 / 3", " 2 / 4"]);
-    const [totalPrice, setTotalPrice] = useState(450);
     const handleRemoveSeat = (seat: string) => {
         const updated = [...selectedSeats];
         const index = updated.indexOf(seat);
@@ -36,16 +35,14 @@ const SeatSelectionScreen = ({ navigation, route }: any) => {
                 style={{ flex: 1 }}
                 contentContainerStyle={{ paddingHorizontal: widthPixel(16), flexGrow: 1, }}
             >
-                {/* Selected Seat Image */}
                 <View style={styles.seatImageContainer}>
                     <Image
-                        source={images.seatImg} // replace with your seat image
+                        source={images.seatImg}
                         style={styles.seatImage}
                         resizeMode="contain"
                     />
                 </View>
 
-                {/* Seat Type Legend */}
                 <View style={styles.legendContainer}>
                     {[
                         { label: "Selected", color: colors.skyBlue },

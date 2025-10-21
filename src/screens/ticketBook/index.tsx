@@ -4,7 +4,6 @@ import CustomText from "../../components/customText/CustomText";
 import { colors } from "../../utils/constants";
 import { heightPixel, widthPixel } from "../../utils/helper";
 import { Ionicons } from "@expo/vector-icons";
-import { images } from "../../assets/images";
 import SessionSelector from "../../components/sessionSelector/sessionSelector";
 import SafeAreaWrapper from "../../components/safeAreaWrapper/afeAreaWrapper";
 import { styles } from "./styles";

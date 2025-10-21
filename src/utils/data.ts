@@ -1,4 +1,4 @@
-import { images } from "../assets/images";
+import { images } from "../assets";
 
 export const categoriesList = [
     { id: 28, name: 'Action' },
