@@ -67,60 +67,40 @@ const SearchScreen: React.FC = () => {
                     onSearchPress={setOnSearchPress}
                 />
             )}
-            {loadingFuntion()}
-            {/* {searchActive ? ( */}
-            <FlatList
-                key="searchResults"
-                data={searchResults}
-                renderItem={({ item }) => <MovieCard movie={item} />}
-                keyExtractor={item => (item?.id?.toString() ?? Math?.random().toString())}
+            {loading ? (
+                loadingFuntion()
+            ) : (
+                <FlatList
+                    key="searchResults"
+                    data={searchResults}
+                    renderItem={({ item }) => <MovieCard movie={item} />}
+                    keyExtractor={item => (item?.id?.toString() ?? Math?.random().toString())}
 
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.listContainer}
-                ListEmptyComponent={() => (
-                    <View style={styles.emptyContainer}>
-                        <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
-                            No search results available
-                        </CustomText>
-                    </View>
-                )}
-                ListHeaderComponent={() => (
-                    <View style={{ borderBottomWidth: 0.2, borderColor: "#0000001", marginBottom: heightPixel(20) }}>
-                        <CustomText
-                            fontSize={12}
-                            weight="semiBold"
-                            color={colors.black}
-                            style={{ marginBottom: heightPixel(10) }}
-                        >
-                            Top Results
-                        </CustomText>
-                    </View>
-                )}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.listContainer}
+                    ListEmptyComponent={() => (
+                        <View style={styles.emptyContainer}>
+                            <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
+                                No search results available
+                            </CustomText>
+                        </View>
+                    )}
+                    ListHeaderComponent={() => (
+                        <View style={{ borderBottomWidth: 0.2, borderColor: "#0000001", marginBottom: heightPixel(20) }}>
+                            <CustomText
+                                fontSize={12}
+                                weight="semiBold"
+                                color={colors.black}
+                                style={{ marginBottom: heightPixel(10) }}
+                            >
+                                Top Results
+                            </CustomText>
+                        </View>
+                    )}
 
-            />
-            {/* // ) : (
-                // <FlatList
-                //     data={(!loading && isGenreListReady) ? genreList : []}
-                //     numColumns={2}
-                //     keyExtractor={item => item.genre}
-                //     renderItem={({ item }) => <GenresCard genre={item.genre} poster={item.thumbnail} />}
-                //     columnWrapperStyle={{ gap: widthPixel(8), marginVertical: heightPixel(4) }}
-                //     showsVerticalScrollIndicator={false}
-                //     contentContainerStyle={styles.listContainer}
-                //     initialNumToRender={10}
-                //     maxToRenderPerBatch={10}
-                //     windowSize={5}
-                //     removeClippedSubviews
-                //     updateCellsBatchingPeriod={100}
-                //     ListEmptyComponent={() => (
-                //         !loading && isGenreListReady && <View style={styles.emptyContainer}>
-                //             <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
-                //                 No genreList available
-                //             </CustomText>
-                //         </View>
-                //     )}
-                // />
-            // )} */}
+                />
+            )}
+
         </SafeAreaWrapper>
     );
 };
