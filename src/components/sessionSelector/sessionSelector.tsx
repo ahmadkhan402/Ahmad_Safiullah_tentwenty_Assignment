@@ -39,7 +39,7 @@ const SessionSelector: React.FC<SessionSelectorProps> = ({
                 onPress={() => setSelectedSession(item)}
                 style={[
                     styles.sessionCard,
-                    selectedSession === item.id && styles.activeSessionCard,
+                    selectedSession?.id === item.id && styles.activeSessionCard,
                 ]}
             >
                 <View

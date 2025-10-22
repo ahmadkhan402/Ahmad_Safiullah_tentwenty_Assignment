@@ -95,7 +95,6 @@ const moviesSlice = createSlice({
                 state.error = action.payload ?? 'Failed to fetch upcoming movies';
             })
 
-            // Category movies
             .addCase(fetchCategoryMovies.pending, state => {
                 state.loading = true;
                 state.error = null;
@@ -109,7 +108,6 @@ const moviesSlice = createSlice({
                 state.error = action.payload ?? 'Failed to fetch category movies';
             })
 
-            // Search movies
             .addCase(searchMovies.pending, state => {
                 state.loading = true;
                 state.error = null;

@@ -18,7 +18,8 @@ export const styles = StyleSheet.create({
         elevation: 2,
     },
     activeSessionCard: {
-        borderColor: colors.darkBackground || "#4CA6EA",
+        borderColor: colors.skyBlue || "#4CA6EA",
+        borderWidth: 0.8,
         shadowOpacity: 0.25,
         shadowRadius: 4,
     },

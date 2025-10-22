@@ -19,7 +19,7 @@ const MovieHeader: FC<MovieHeaderProps> = ({ movieTitle, releaseDate, onBackPres
             </TouchableOpacity>
 
             <View style={styles.centerContent}>
-                <CustomText fontSize={18} weight="semiBold" color={colors.black}>
+                <CustomText fontSize={18} weight="semiBold" color={colors.black} numberOfLines={1}>
                     {movieTitle || "Undefined"}
                 </CustomText>
                 <CustomText fontSize={12} color={colors.skyBlue}>
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
 
     },
     centerContent: {
+        marginLeft: 4,
         alignItems: "center",
         flex: 1,
     },
