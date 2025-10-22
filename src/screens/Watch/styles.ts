@@ -14,6 +14,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  imageRadius: {
+    borderRadius: 10,
+  },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -34,7 +37,7 @@ export const styles = StyleSheet.create({
 
   listContainer: {
     paddingTop: heightPixel(20),
-    paddingBottom: heightPixel(10),
+    paddingBottom: heightPixel(80),
     paddingHorizontal: widthPixel(14),
     backgroundColor: colors.background,
     justifyContent: 'center',

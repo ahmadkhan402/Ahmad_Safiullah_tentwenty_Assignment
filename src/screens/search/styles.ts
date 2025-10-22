@@ -39,12 +39,12 @@ export const styles = StyleSheet.create({
     },
     listContainer: {
         paddingTop: heightPixel(20),
-        paddingBottom: heightPixel(10),
+        paddingBottom: heightPixel(80),
         paddingHorizontal: widthPixel(15),
         backgroundColor: colors.background,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignContent: 'center',
-        flexGrow: 1
+        flexGrow: 1,
 
     },
 });

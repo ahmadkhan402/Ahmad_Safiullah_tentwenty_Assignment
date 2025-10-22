@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from 'react';
 import { View, FlatList, ImageBackground, ActivityIndicator, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks';
-import { fetchCategoryMovies, fetchUpcomingMovies, loadCachedMovies } from '../../redux/slices/moviesSlice';
+import { fetchCategoryMovies, fetchUpcomingMovies } from '../../redux/slices/moviesSlice';
 import { Movie } from '../../types/types';
 import { heightPixel, widthPixel } from '../../utils/helper';
 import { colors } from '../../utils/constants';
@@ -11,10 +11,9 @@ import { styles } from './styles';
 import { ScreenNames } from '../../route/screenNames';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { Image } from 'expo-image';
 import SafeAreaWrapper from '../../components/safeAreaWrapper/afeAreaWrapper';
 
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
 
 
 const Header = ({ navigation }: any) => (
@@ -38,29 +37,30 @@ const Header = ({ navigation }: any) => (
   </View>
 );
 const MovieCard = memo(({ item }: { item: Movie }) => {
+  const { imageBaseUrl } = useAppSelector(state => state.config);
   const navigation = useNavigation<any>()
+
   return (
     <Pressable style={styles.card} onPress={() => {
       navigation.navigate(ScreenNames.MovieDetails, { movie: item });
     }}>
-      <Image
-        source={{ uri: `${IMAGE_BASE_URL}${item.poster_path}` }}
+      <ImageBackground
+        source={{ uri: `${imageBaseUrl}${item.poster_path}` }}
         style={styles.poster}
-        contentFit="cover"
-        cachePolicy="memory"
-        transition={300}
-      />
-      <View style={styles.overlay}>
-        <CustomText
-          fontSize={14}
-          color={colors.white}
-          weight="semiBold"
-          numberOfLines={1}
-          style={styles.title}
-        >
-          {item.title}
-        </CustomText>
-      </View>
+        imageStyle={styles.imageRadius}
+      >
+        <View style={styles.overlay}>
+          <CustomText
+            fontSize={14}
+            color={colors.white}
+            weight="semiBold"
+            numberOfLines={1}
+            style={styles.title}
+          >
+            {item.title}
+          </CustomText>
+        </View>
+      </ImageBackground>
     </Pressable>
   );
 });
@@ -69,14 +69,15 @@ const Watch: React.FC = () => {
   const insets = useSafeAreaInsets()
   const navigation = useNavigation<any>()
   const { movies, loading, error } = useAppSelector(state => state.movies);
-
+  const { imageBaseUrl } = useAppSelector(state => state.config);
   useEffect(() => {
     dispatch(fetchUpcomingMovies());
-    dispatch(loadCachedMovies());
     dispatch(fetchCategoryMovies());
   }, [dispatch]);
 
-  if (loading) {
+  const hasData = movies.length > 0;
+
+  if (loading && !hasData) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color={colors.darkBackground} />
@@ -84,7 +85,7 @@ const Watch: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (error && !hasData) {
     return (
       <View style={styles.center}>
         <CustomText color={colors.red} fontSize={16}>
@@ -102,7 +103,7 @@ const Watch: React.FC = () => {
       <FlatList
         data={movies}
         renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => (item?.id?.toString() ?? Math?.random().toString())}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         initialNumToRender={10}

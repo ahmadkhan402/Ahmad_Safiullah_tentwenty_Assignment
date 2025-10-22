@@ -6,5 +6,6 @@ export interface Movie {
     overview: string;
     genre_names: any;
     original_title: string;
-    genre_ids: number[]
+    genre_ids: number[],
+    imageBaseUrl: string
 }

@@ -14,7 +14,7 @@ import { heightPixel } from '../../utils/helper';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { ScreenNames } from '../../route/screenNames';
-import { IMAGE_BASE_URL } from '../../config';
+import { useAppSelector } from '../../redux/hooks/hooks';
 
 
 interface Props {
@@ -23,10 +23,11 @@ interface Props {
 }
 
 const MovieDetailsScreen: React.FC<Props> = ({ route }) => {
+    const { imageBaseUrl } = useAppSelector(state => state.config);
     const navigation = useNavigation<any>()
     const { movie } = route.params;
     const genreNames = movie?.genre_ids || [];
-    const imgUrl = movie?.backdrop_path ? `${IMAGE_BASE_URL}${movie.backdrop_path}` : null;
+    const imgUrl = movie?.backdrop_path ? `${imageBaseUrl}${movie.backdrop_path}` : null;
 
     console.log("imada", !!movie?.backdrop_pathUrl);
 

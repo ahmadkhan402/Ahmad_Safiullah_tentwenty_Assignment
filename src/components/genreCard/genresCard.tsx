@@ -3,7 +3,7 @@ import { View, ImageBackground, StyleSheet, Dimensions } from 'react-native';
 import { colors } from '../../utils/constants';
 import { heightPixel, widthPixel } from '../../utils/helper';
 import CustomText from '../customText/CustomText';
-import { IMAGE_BASE_URL } from '../../config';
+import { useAppSelector } from '../../redux/hooks/hooks';
 
 
 const { width } = Dimensions.get('window');
@@ -14,10 +14,11 @@ interface Props {
 }
 
 const GenreCard: React.FC<Props> = ({ genre, poster }) => {
+    const { imageBaseUrl } = useAppSelector(state => state.config);
     return (
         <View style={styles.card}>
             <ImageBackground
-                source={{ uri: `${IMAGE_BASE_URL}${poster}` }}
+                source={{ uri: `${imageBaseUrl}${poster}` }}
                 style={styles.poster}
                 imageStyle={styles.imageRadius}
             >

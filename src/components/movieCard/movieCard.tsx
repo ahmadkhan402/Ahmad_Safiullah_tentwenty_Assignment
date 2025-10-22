@@ -14,8 +14,7 @@ import { colors } from '../../utils/constants';
 import { widthPixel, heightPixel, getGenreNames } from '../../utils/helper';
 import { useNavigation } from '@react-navigation/native';
 import { ScreenNames } from '../../route/screenNames';
-
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+import { useAppSelector } from '../../redux/hooks/hooks';
 const { width } = Dimensions.get('window');
 
 interface Props {
@@ -27,7 +26,7 @@ const CARD_HEIGHT = heightPixel(120);
 const POSTER_WIDTH = widthPixel(80);
 
 const MovieCard: React.FC<Props> = ({ movie, onPressMenu }) => {
-    console.log("movie", JSON.stringify(movie, null, 2));
+    const { imageBaseUrl } = useAppSelector(state => state.config);
     const genreNames = movie.genre_ids ? getGenreNames(movie.genre_ids) : [];
     const navigation = useNavigation<any>()
     return (
@@ -36,7 +35,7 @@ const MovieCard: React.FC<Props> = ({ movie, onPressMenu }) => {
         }}>
             {/* Poster */}
             <Image
-                source={{ uri: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : '' }}
+                source={{ uri: movie.poster_path ? `${imageBaseUrl}${movie.poster_path}` : '' }}
                 style={styles.poster}
                 resizeMode="cover"
             />

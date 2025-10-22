@@ -5,6 +5,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     Keyboard,
+    Alert,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks';
@@ -25,16 +26,29 @@ const SearchInput: React.FC<Props> = ({ query, onSearchPress, setQuery, onSearch
     const { searchResults } = useAppSelector(state => state.movies);
 
     const handleSearch = useCallback(
-        debounce((text: string) => {
+        debounce(async (text: string) => {
             if (text.trim().length > 0) {
-                dispatch(searchMovies(text));
-                onSearchActive(true);
+                try {
+                    const resultAction = await dispatch(searchMovies(text));
+                    if (searchMovies.rejected.match(resultAction)) {
+                        // Network or API error
+                        Alert.alert(
+                            'Network Error',
+                            resultAction.payload || 'Unable to fetch results. Showing previous results if any.'
+                        );
+                        onSearchActive(searchResults.length > 0);
+                    } else {
+                        onSearchActive(true);
+                    }
+                } catch (error) {
+                    console.warn('Unexpected error', error);
+                }
             } else {
                 dispatch(clearSearchResults());
                 onSearchActive(false);
             }
         }, 400),
-        []
+        [dispatch, searchResults]
     );
 
     const onChangeText = (text: string) => {

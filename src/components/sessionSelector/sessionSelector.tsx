@@ -76,7 +76,7 @@ const SessionSelector: React.FC<SessionSelectorProps> = ({
         [selectedSession]
     );
 
-    const keyExtractor = useCallback((item: Session) => item.id.toString(), []);
+    const keyExtractor = useCallback((item: Session) => (item?.id?.toString() ?? Math?.random().toString()), []);
 
     return (
         <FlatList

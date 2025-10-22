@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, ActivityIndicator, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import YoutubePlayer, { PLAYER_STATES } from 'react-native-youtube-iframe';
 import CustomText from '../../components/customText/CustomText';
@@ -41,7 +41,10 @@ const MoviePlayerScreen: React.FC<Props> = ({ route, navigation }) => {
             }
         } catch (error) {
             console.error('Error fetching trailer:', error);
-            navigation.goBack();
+            ToastAndroid.show('Something went wrong. Please try again.', ToastAndroid.SHORT);
+            if (navigation.canGoBack()) {
+                navigation.goBack();
+            }
         } finally {
             setLoading(false);
         }

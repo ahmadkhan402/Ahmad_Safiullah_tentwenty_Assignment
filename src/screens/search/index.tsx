@@ -85,7 +85,8 @@ const SearchScreen: React.FC = () => {
                     key="searchResults"
                     data={searchResults}
                     renderItem={({ item }) => <MovieCard movie={item} />}
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => (item?.id?.toString() ?? Math?.random().toString())}
+
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.listContainer}
                     ListEmptyComponent={() => (
@@ -107,10 +108,11 @@ const SearchScreen: React.FC = () => {
                             </CustomText>
                         </View>
                     )}
+
                 />
             ) : (
                 <FlatList
-                    data={genreList}
+                    data={(!loading && isGenreListReady) ? genreList : []}
                     numColumns={2}
                     keyExtractor={item => item.genre}
                     renderItem={({ item }) => <GenresCard genre={item.genre} poster={item.thumbnail} />}

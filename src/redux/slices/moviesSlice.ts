@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Movie } from '../../types/types';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../../config';
 import { categoriesList } from '../../utils/data';
@@ -21,24 +20,6 @@ const initialState: MoviesState = {
     error: null,
 };
 
-export const loadCachedMovies = createAsyncThunk<
-    { movies: Movie[]; categories: Record<string, Movie[]> },
-    void,
-    { rejectValue: string }
->('movies/loadCached', async (_, { rejectWithValue }) => {
-    try {
-        const cachedMovies = await AsyncStorage.getItem('upcomingMovies');
-        const cachedCategories = await AsyncStorage.getItem('categoryMovies');
-
-        return {
-            movies: cachedMovies ? JSON.parse(cachedMovies) : [],
-            categories: cachedCategories ? JSON.parse(cachedCategories) : {},
-        };
-    } catch (error: any) {
-        return rejectWithValue(error.message || 'Failed to load cached movies');
-    }
-});
-
 export const fetchUpcomingMovies = createAsyncThunk<Movie[], void, { rejectValue: string }>(
     'movies/fetchUpcoming',
     async (_, { rejectWithValue }) => {
@@ -46,43 +27,30 @@ export const fetchUpcomingMovies = createAsyncThunk<Movie[], void, { rejectValue
             const response = await axios.get(`${TMDB_BASE_URL}/movie/upcoming`, {
                 params: { api_key: TMDB_API_KEY },
             });
-
-            const data = response.data.results as Movie[];
-            await AsyncStorage.setItem('upcomingMovies', JSON.stringify(data));
-            return data;
+            return response.data.results as Movie[];
         } catch (error: any) {
-            console.warn('API fetch failed, loading offline cache...');
-            const cached = await AsyncStorage.getItem('upcomingMovies');
-            if (cached) return JSON.parse(cached) as Movie[];
-            return rejectWithValue(error.message || 'Failed to fetch movies');
+            return rejectWithValue(error.message || 'Failed to fetch upcoming movies');
         }
     }
 );
 
-export const fetchCategoryMovies = createAsyncThunk<
-    Record<string, Movie[]>,
-    void,
-    { rejectValue: string }
->('movies/fetchCategories', async (_, { rejectWithValue }) => {
-    try {
-        const results: Record<string, Movie[]> = {};
-
-        for (const cat of categoriesList) {
-            const response = await axios.get(`${TMDB_BASE_URL}/discover/movie`, {
-                params: { api_key: TMDB_API_KEY, with_genres: cat.id },
-            });
-            results[cat.name] = response.data.results;
+export const fetchCategoryMovies = createAsyncThunk<Record<string, Movie[]>, void, { rejectValue: string }>(
+    'movies/fetchCategories',
+    async (_, { rejectWithValue }) => {
+        try {
+            const results: Record<string, Movie[]> = {};
+            for (const cat of categoriesList) {
+                const response = await axios.get(`${TMDB_BASE_URL}/discover/movie`, {
+                    params: { api_key: TMDB_API_KEY, with_genres: cat.id },
+                });
+                results[cat.name] = response.data.results;
+            }
+            return results;
+        } catch (error: any) {
+            return rejectWithValue(error.message || 'Failed to fetch category movies');
         }
-
-        await AsyncStorage.setItem('categoryMovies', JSON.stringify(results));
-        return results;
-    } catch (error: any) {
-        console.warn('Category fetch failed, loading offline cache...');
-        const cached = await AsyncStorage.getItem('categoryMovies');
-        if (cached) return JSON.parse(cached) as Record<string, Movie[]>;
-        return rejectWithValue(error.message || 'Failed to fetch category movies');
     }
-});
+);
 
 export const searchMovies = createAsyncThunk<Movie[], string, { rejectValue: string }>(
     'movies/search',
@@ -114,23 +82,6 @@ const moviesSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addCase(loadCachedMovies.pending, state => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(
-                loadCachedMovies.fulfilled,
-                (state, action: PayloadAction<{ movies: Movie[]; categories: Record<string, Movie[]> }>) => {
-                    state.loading = false;
-                    state.movies = action.payload.movies;
-                    state.categories = action.payload.categories;
-                }
-            )
-            .addCase(loadCachedMovies.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload ?? 'Failed to load cached movies';
-            })
-
             .addCase(fetchUpcomingMovies.pending, state => {
                 state.loading = true;
                 state.error = null;
@@ -141,10 +92,10 @@ const moviesSlice = createSlice({
             })
             .addCase(fetchUpcomingMovies.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload ?? 'Failed to load movies';
+                state.error = action.payload ?? 'Failed to fetch upcoming movies';
             })
 
-            // Categories
+            // Category movies
             .addCase(fetchCategoryMovies.pending, state => {
                 state.loading = true;
                 state.error = null;
@@ -155,10 +106,10 @@ const moviesSlice = createSlice({
             })
             .addCase(fetchCategoryMovies.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload ?? 'Failed to load categories';
+                state.error = action.payload ?? 'Failed to fetch category movies';
             })
 
-            // Search
+            // Search movies
             .addCase(searchMovies.pending, state => {
                 state.loading = true;
                 state.error = null;
@@ -169,7 +120,7 @@ const moviesSlice = createSlice({
             })
             .addCase(searchMovies.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload ?? 'Failed to search movies';
+                state.error = action.payload ?? 'Search failed';
             });
     },
 });
