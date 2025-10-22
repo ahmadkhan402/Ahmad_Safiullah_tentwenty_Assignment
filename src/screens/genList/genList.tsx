@@ -33,15 +33,18 @@ const GenListScreen: React.FC = () => {
         thumbnail: movies?.[0]?.poster_path || '',
     }));
 
-    if (loading || !isGenreListReady) {
-        return (
-            <SafeAreaWrapper style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <ActivityIndicator size="large" color={colors.darkBackground} />
-                <CustomText fontSize={14} color={colors.darkBackground} style={{ marginTop: heightPixel(10) }}>
-                    Loading genres...
-                </CustomText>
-            </SafeAreaWrapper>
-        );
+    const loadingfun = () => {
+
+        if (loading) {
+            return (
+                <SafeAreaWrapper style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                    <ActivityIndicator size="large" color={colors.darkBackground} />
+                    <CustomText fontSize={14} color={colors.darkBackground} style={{ marginTop: heightPixel(10) }}>
+                        Loading genres...
+                    </CustomText>
+                </SafeAreaWrapper>
+            );
+        }
     }
 
     return (
@@ -49,27 +52,32 @@ const GenListScreen: React.FC = () => {
             <SearchInput
                 isSearch={false}
             />
-            <FlatList
-                data={(!loading && isGenreListReady) ? genreList : []}
-                numColumns={2}
-                keyExtractor={item => item.genre}
-                renderItem={({ item }) => <GenresCard genre={item.genre} poster={item.thumbnail} />}
-                columnWrapperStyle={{ gap: widthPixel(8), marginVertical: heightPixel(4) }}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.listContainer}
-                initialNumToRender={10}
-                maxToRenderPerBatch={10}
-                windowSize={5}
-                removeClippedSubviews
-                updateCellsBatchingPeriod={100}
-                ListEmptyComponent={() => (
-                    !loading && isGenreListReady && <View style={styles.emptyContainer}>
-                        <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
-                            No genreList available
-                        </CustomText>
-                    </View>
+            {(loading)
+                ? (
+                    loadingfun()
+                ) : (
+                    <FlatList
+                        data={genreList || []}
+                        numColumns={2}
+                        keyExtractor={item => item.genre}
+                        renderItem={({ item }) => <GenresCard genre={item.genre} poster={item.thumbnail} />}
+                        columnWrapperStyle={{ gap: widthPixel(8), marginVertical: heightPixel(4) }}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={styles.listContainer}
+                        initialNumToRender={10}
+                        maxToRenderPerBatch={10}
+                        windowSize={5}
+                        removeClippedSubviews
+                        updateCellsBatchingPeriod={100}
+                        ListEmptyComponent={() => (
+                            !loading && isGenreListReady && <View style={styles.emptyContainer}>
+                                <CustomText fontSize={16} weight="medium" color="#999" textAlignCenter>
+                                    No genreList available
+                                </CustomText>
+                            </View>
+                        )}
+                    />
                 )}
-            />
         </SafeAreaWrapper>
     );
 };
