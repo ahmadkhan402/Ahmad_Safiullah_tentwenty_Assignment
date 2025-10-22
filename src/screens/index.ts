@@ -1,6 +1,8 @@
 import { searchMovies } from "../redux/slices/moviesSlice";
 import Dashboard from "./dashboard";
 import MovieDetailsScreen from "./details";
+import GenListScreen from "./genList/genList";
+
 import MediaLibrary from "./MediaLibrary";
 import More from "./More";
 import MoviePlayerScreen from "./moviePlayer";
@@ -18,5 +20,7 @@ export {
     MovieDetailsScreen,
     MoviePlayerScreen,
     TicketBookingScreen,
-    SeatSelectionScreen
+    SeatSelectionScreen,
+    GenListScreen
+
 }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
     View,
     TextInput,
@@ -13,16 +13,20 @@ import { searchMovies, clearSearchResults } from '../../redux/slices/moviesSlice
 import { debounce } from 'lodash';
 import { colors, fontFamily } from '../../utils/constants';
 import { widthPixel } from '../../utils/helper';
+import { useNavigation } from '@react-navigation/native';
+import { ScreenNames } from '../../route/screenNames';
 
 interface Props {
-    query: string;
-    setQuery: (value: string) => void;
-    onSearchActive: (active: boolean) => void;
-    onSearchPress: (active: boolean) => void;
+    query?: string;
+    setQuery?: (value: string) => void;
+    onSearchActive?: (active: boolean) => void;
+    onSearchPress?: (active: boolean) => void;
+    isSearch?: boolean;
 }
 
-const SearchInput: React.FC<Props> = ({ query, onSearchPress, setQuery, onSearchActive }) => {
+const SearchInput: React.FC<Props> = ({ query, isSearch = true, onSearchPress, setQuery, onSearchActive }) => {
     const dispatch = useAppDispatch();
+    const navigation = useNavigation<any>();
     const { searchResults } = useAppSelector(state => state.movies);
 
     const handleSearch = useCallback(
@@ -31,51 +35,62 @@ const SearchInput: React.FC<Props> = ({ query, onSearchPress, setQuery, onSearch
                 try {
                     const resultAction = await dispatch(searchMovies(text));
                     if (searchMovies.rejected.match(resultAction)) {
-                        // Network or API error
                         Alert.alert(
                             'Network Error',
                             resultAction.payload || 'Unable to fetch results. Showing previous results if any.'
                         );
-                        onSearchActive(searchResults.length > 0);
+                        onSearchActive?.(searchResults.length > 0);
                     } else {
-                        onSearchActive(true);
+                        onSearchActive?.(true);
                     }
                 } catch (error) {
                     console.warn('Unexpected error', error);
                 }
             } else {
                 dispatch(clearSearchResults());
-                onSearchActive(false);
+                onSearchActive?.(false);
             }
         }, 400),
         [dispatch, searchResults]
     );
 
     const onChangeText = (text: string) => {
-        setQuery(text);
+        setQuery?.(text);
         handleSearch(text);
     };
 
     const onClear = () => {
-        setQuery('');
+        setQuery?.('');
         dispatch(clearSearchResults());
-        onSearchActive(false);
+        onSearchActive?.(false);
         Keyboard.dismiss();
+    };
+
+    const handleNavigate = () => {
+        if (!isSearch) {
+            navigation.navigate(ScreenNames.Search);
+        } else {
+            onSearchPress?.(true);
+        }
     };
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => onSearchPress?.(true)}>
+            <TouchableOpacity onPress={handleNavigate}>
                 <MaterialIcons name="search" size={30} color="#999" style={{ marginRight: 8 }} />
             </TouchableOpacity>
+
             <TextInput
                 placeholder="TV shows, movies and more"
                 placeholderTextColor="#999"
                 value={query}
+                // editable={isSearch}
                 onChangeText={onChangeText}
+                onFocus={() => !isSearch && navigation.navigate(ScreenNames.Search)}
                 style={styles.input}
             />
-            {query.length > 0 && (
+
+            {query && query.length > 0 && (
                 <TouchableOpacity onPress={onClear}>
                     <MaterialIcons name="close" size={24} color="#999" />
                 </TouchableOpacity>
@@ -101,6 +116,6 @@ const styles = StyleSheet.create({
         flex: 1,
         color: colors.black,
         fontSize: 16,
-        fontFamily: fontFamily.regular
+        fontFamily: fontFamily.regular,
     },
 });

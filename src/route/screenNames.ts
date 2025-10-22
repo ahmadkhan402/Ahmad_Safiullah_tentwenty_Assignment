@@ -5,6 +5,7 @@ export const ScreenNames = {
     MediaLibrary: 'MediaLibrary',
     More: 'More',
     Search: 'Search',
+    GenList: "GenList",
     TabDashboard: 'TabDashboard',
     TabWatch: 'TabWatch',
     TabMediaLibrary: 'TabMediaLibrary',

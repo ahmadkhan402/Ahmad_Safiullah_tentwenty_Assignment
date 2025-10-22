@@ -30,7 +30,7 @@ const Header = ({ navigation }: any) => (
     <TouchableOpacity
       style={styles.searchButton}
       activeOpacity={0.7}
-      onPress={() => navigation?.navigate(ScreenNames.Search)}
+      onPress={() => navigation?.navigate(ScreenNames.GenList)}
     >
       <Ionicons name="search" size={24} color={colors.black} />
     </TouchableOpacity>

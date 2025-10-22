@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
-import { Dashboard, Watch, MediaLibrary, More } from '../../screens';
+import { Dashboard, Watch, MediaLibrary, More, GenListScreen } from '../../screens';
 import { ScreenNames } from '../screenNames';
 import { colors, fontFamily } from '../../utils/constants';
 import { font, heightPixel } from '../../utils/helper';
@@ -15,6 +15,7 @@ const Stack = createNativeStackNavigator();
 const SearchStack = () => (
     <Stack.Navigator initialRouteName={ScreenNames.Watch} screenOptions={{ headerShown: false }}>
         <Stack.Screen name={ScreenNames.Watch} component={Watch} />
+        <Stack.Screen name={ScreenNames.GenList} component={GenListScreen} />
         <Stack.Screen name={ScreenNames.Search} component={SearchScreen} />
     </Stack.Navigator>
 );
